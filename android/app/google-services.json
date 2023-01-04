@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "450032080314",
+    "project_id": "login-form-4286a",
+    "storage_bucket": "login-form-4286a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:450032080314:android:9cf6ec2dbc07f982377983",
+        "android_client_info": {
+          "package_name": "com.techease.login_form1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "450032080314-v4ng0fne98lp46v9sv1kimq4l9it15il.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCx4g1wpv06bm-G5EZUTso4jxHPC7y6v64"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "450032080314-v4ng0fne98lp46v9sv1kimq4l9it15il.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
