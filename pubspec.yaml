@@ -37,6 +37,8 @@ dependencies:
   firebase_database: ^10.0.8
   image_picker: ^0.8.6
   image_cropper: ^3.0.1
+  get: ^4.6.5
+  http: ^0.13.5
   
   
 

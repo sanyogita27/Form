@@ -1,17 +1,14 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-
 import 'package:login_form1/global.dart';
-
 import 'package:login_form1/model.dart';
-
 import 'package:login_form1/progress_dialog.dart';
 
 class SignupPage extends StatefulWidget {
@@ -22,8 +19,24 @@ class SignupPage extends StatefulWidget {
 }
 
 class SignupPageState extends State<SignupPage> {
+  // final AuthenticationService _auth = AuthenticationService();
+  // createUser() async {
+  //   dynamic result = await _auth.createNewUser(
+  //       _namecontroller.text, _emailcontroller.text, _passworrdcontroller.text);
+  //   if (result == null) {
+  //     Fluttertoast.showToast(msg: "Email is not valid");
+  //   } else {
+  //     _namecontroller.clear();
+  //     _passworrdcontroller.clear();
+  //     _emailcontroller.clear();
+  //     Navigator.pop(context);
+  //     debugPrint(result.toString());
+  //   }
+  // }
+
   File? imageFile;
   String? imageUrl;
+
   void _showImageDialog() {
     showDialog(
         context: context,
@@ -44,7 +57,7 @@ class SignupPageState extends State<SignupPage> {
                           Padding(
                             padding: EdgeInsets.all(4.0),
                             child: Icon(
-                              Icons.camera,
+                              Icons.camera_alt,
                               color: Colors.red,
                             ),
                           ),
@@ -81,25 +94,25 @@ class SignupPageState extends State<SignupPage> {
         });
   }
 
+  ImagePicker picker = ImagePicker();
+
   void _getFromCamera() async {
-    XFile? pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.camera);
+    XFile? pickedFile = await picker.pickImage(source: ImageSource.camera);
     _cropImage(pickedFile!.path);
     Navigator.pop(context);
   }
 
   void _getFromGallery() async {
-    XFile? pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+    XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
     _cropImage(pickedFile!.path);
     Navigator.pop(context);
   }
 
   final _formkey = GlobalKey<FormState>();
-  final emailcontroller = TextEditingController();
-  final passworrdcontroller = TextEditingController();
-  final confirmcontroller = TextEditingController();
-  final phonecontroller = TextEditingController();
+  final _emailcontroller = TextEditingController();
+  final _passworrdcontroller = TextEditingController();
+  final _phonecontroller = TextEditingController();
+  final _confirmcontroller = TextEditingController();
 
   saveInfo() async {
     showDialog(
@@ -112,15 +125,15 @@ class SignupPageState extends State<SignupPage> {
 
     final User? firebaseUser = firebaseAuth.currentUser;
     try {
-      final ref = FirebaseStorage.instance
-          .ref()
-          .child("userimage")
-          .child('${DateTime.now()}.jpg');
-      await ref.putFile(imageFile!);
-      imageUrl = await ref.getDownloadURL();
+      // final ref = FirebaseStorage.instance
+      //     .ref()
+      //     .child("userimage")
+      //     .child('${DateTime.now()}.jpg');
+      // await ref.putFile(imageFile!);
+      // imageUrl = await ref.getDownloadURL();
       await firebaseAuth.createUserWithEmailAndPassword(
-          email: emailcontroller.text.trim(),
-          password: passworrdcontroller.text.trim());
+          email: _emailcontroller.text.trim(),
+          password: _passworrdcontroller.text.trim());
     } on FirebaseAuthException catch (e) {
       return e.message;
     }
@@ -130,9 +143,8 @@ class SignupPageState extends State<SignupPage> {
 
       UserModel usersmap = UserModel(
         uid: firebaseUser.uid,
-        email: emailcontroller.text,
-        phone: phonecontroller.text,
-        profilepic: imageUrl,
+        email: _emailcontroller.text,
+        phone: _phonecontroller.text,
       );
 
       await FirebaseFirestore.instance
@@ -154,8 +166,7 @@ class SignupPageState extends State<SignupPage> {
     CroppedFile? croppedImage = await ImageCropper()
         .cropImage(sourcePath: filePath, maxHeight: 1080, maxWidth: 1080);
     if (croppedImage != null) {
-      imageFile = File(croppedImage.path);
-
+      imageUrl = (croppedImage.path);
       setState(() {});
     }
   }
@@ -175,43 +186,15 @@ class SignupPageState extends State<SignupPage> {
         physics: const AlwaysScrollableScrollPhysics(),
         child: Column(
           children: [
-            GestureDetector(
-              onTap: () {
-                _showImageDialog();
-              },
-              child: ClipOval(
-                  child:
-                      imageFile == null ? Container() : Image.file(imageFile!)),
-            ),
+            // InkWell(
+            //   onTap: () {
+            //     _showImageDialog();
+            //   },
+            //   child: imageFile == null
+            //       ? const CircleAvatar()
+            //       : CircleAvatar(radius: 70, child: Image.file(imageFile!)),
+            // ),
 
-            // imagepath == null
-            //     ? Container()
-            //     : ClipOval(
-            //         child: Image.file(File(imagepath!.path)),
-            //       ),
-            // ElevatedButton(
-            //     style: const ButtonStyle(
-            //         backgroundColor: MaterialStatePropertyAll(Colors.grey),
-            //         shape: MaterialStatePropertyAll(RoundedRectangleBorder(
-            //             borderRadius:
-            //                 BorderRadius.all(Radius.elliptical(10, 10))))),
-            //     onPressed: () async {
-            //       imagepath = await picker.pickImage(
-            //           source: ImageSource.gallery,
-            //           maxHeight: 100,
-            //           maxWidth: 100,
-            //           imageQuality: 80);
-            //       if (imagepath != null) {
-            //         setState(() {});
-            //       }
-            //     },
-            //     child: const Text(
-            //       "Select Image",
-            //       style: TextStyle(
-            //         color: Colors.black,
-            //         fontSize: 20,
-            //       ),
-            //     )),
             Container(
               padding: const EdgeInsets.all(16),
               child: Form(
@@ -225,7 +208,7 @@ class SignupPageState extends State<SignupPage> {
                     ),
                     TextFormField(
                       keyboardType: TextInputType.phone,
-                      controller: phonecontroller,
+                      controller: _phonecontroller,
                       style: const TextStyle(
                         color: Colors.grey,
                       ),
@@ -235,7 +218,7 @@ class SignupPageState extends State<SignupPage> {
                         focusedBorder: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey),
                         ),
-                        hintText: "Phone Number",
+                        hintText: "Phone",
                         hintStyle: TextStyle(
                           color: Colors.grey,
                         ),
@@ -246,7 +229,7 @@ class SignupPageState extends State<SignupPage> {
                         ),
                       ),
                       validator: (value) {
-                        if (value != null && value.length < 10) {
+                        if (value != null && value.length < 3) {
                           return "Invalid";
                         }
                         return null;
@@ -258,7 +241,7 @@ class SignupPageState extends State<SignupPage> {
                     TextFormField(
                       style: const TextStyle(color: Colors.grey),
                       keyboardType: TextInputType.emailAddress,
-                      controller: emailcontroller,
+                      controller: _emailcontroller,
                       decoration: const InputDecoration(
                           enabledBorder: UnderlineInputBorder(
                               borderSide: BorderSide(color: Colors.grey)),
@@ -286,7 +269,7 @@ class SignupPageState extends State<SignupPage> {
                     TextFormField(
                       style: const TextStyle(color: Colors.grey),
                       keyboardType: TextInputType.text,
-                      controller: passworrdcontroller,
+                      controller: _passworrdcontroller,
                       obscureText: true,
                       decoration: const InputDecoration(
                           enabledBorder: UnderlineInputBorder(
@@ -322,7 +305,7 @@ class SignupPageState extends State<SignupPage> {
                         color: Colors.grey,
                       ),
                       keyboardType: TextInputType.text,
-                      controller: confirmcontroller,
+                      controller: _confirmcontroller,
                       obscureText: true,
                       decoration: const InputDecoration(
                           enabledBorder: UnderlineInputBorder(
@@ -341,7 +324,7 @@ class SignupPageState extends State<SignupPage> {
                           suffixIcon: Icon(Icons.remove_red_eye)),
                       validator: (value) {
                         if (value != null &&
-                            value != passworrdcontroller.text) {
+                            value != _passworrdcontroller.text) {
                           return "Wrong Password";
                         }
                         return null;

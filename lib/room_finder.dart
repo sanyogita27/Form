@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
-import 'package:login_form1/global.dart';
+
+import 'package:login_form1/model.dart';
 
 class RoomFinder extends StatefulWidget {
   const RoomFinder({super.key});
@@ -21,15 +22,20 @@ class RoomFinderState extends State<RoomFinder> {
   //   }
   // }
 
-  List searchResult = [];
-  void searchFirebase(String query) async {
-    final result = await FirebaseFirestore.instance
-        .collection('user')
-        .where('email', isEqualTo: query)
+  Future<UserModel> getUserDetails(String email) async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection("user")
+        .where("email", isEqualTo: email)
         .get();
-    setState(() {
-      searchResult = result.docs.map((e) => e.data()).toList();
-    });
+    final userData = snapshot.docs.map((e) => UserModel.fromSnapshot(e)).single;
+    return userData;
+  }
+
+  Future<List<UserModel>> allUser() async {
+    final snapshot = await FirebaseFirestore.instance.collection("user").get();
+    final userData =
+        snapshot.docs.map((e) => UserModel.fromSnapshot(e)).toList();
+    return userData;
   }
 
   @override
@@ -115,9 +121,9 @@ class RoomFinderState extends State<RoomFinder> {
                                 Icons.location_on,
                                 color: Colors.red,
                               ),
-                              hintText: 'Search room or near you'),
-                          onChanged: (query) {
-                            searchFirebase(query);
+                              hintText: 'Search '),
+                          onChanged: (email) {
+                            getUserDetails(email);
                           },
                         ),
                       ),
@@ -130,7 +136,7 @@ class RoomFinderState extends State<RoomFinder> {
                                 fixedSize:
                                     MaterialStatePropertyAll(Size(300, 50))),
                             onPressed: () {
-                              // Navigator.pushNamed(context, '/search');
+                             
                             },
                             child: const Text(
                               "Search Now",
@@ -141,21 +147,21 @@ class RoomFinderState extends State<RoomFinder> {
                             )),
                       ),
                       // ),
-                      SizedBox(
-                        height: 40,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: const [
-                            Text(
-                              "Advance Search",
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: Color.fromARGB(221, 37, 37, 37),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      // SizedBox(
+                      //   height: 40,
+                      //   child: Row(
+                      //     mainAxisAlignment: MainAxisAlignment.end,
+                      //     children: const [
+                      //       Text(
+                      //         "Advance Search",
+                      //         style: TextStyle(
+                      //           fontSize: 20,
+                      //           color: Color.fromARGB(221, 37, 37, 37),
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),
@@ -168,33 +174,33 @@ class RoomFinderState extends State<RoomFinder> {
   }
 }
 
-class Location {
-  final String id;
-  final String imageUrl;
-  final String icon;
-  final String title;
-  final String subtitle;
-  Location({
-    required this.id,
-    required this.imageUrl,
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-  });
-  Location.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
-        imageUrl = json['imageUrl'],
-        icon = json['icon'],
-        title = json['title'],
-        subtitle = json['subtitle'];
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'imageUrl': imageUrl,
-        'icon': icon,
-        'title': title,
-        'subtitle': subtitle,
-      };
-}
+// class Location {
+//   final String id;
+//   final String imageUrl;
+//   final String icon;
+//   final String title;
+//   final String subtitle;
+//   Location({
+//     required this.id,
+//     required this.imageUrl,
+//     required this.icon,
+//     required this.title,
+//     required this.subtitle,
+//   });
+//   Location.fromJson(Map<String, dynamic> json)
+//       : id = json['id'],
+//         imageUrl = json['imageUrl'],
+//         icon = json['icon'],
+//         title = json['title'],
+//         subtitle = json['subtitle'];
+//   Map<String, dynamic> toJson() => {
+//         'id': id,
+//         'imageUrl': imageUrl,
+//         'icon': icon,
+//         'title': title,
+//         'subtitle': subtitle,
+//       };
+// }
 
 
 

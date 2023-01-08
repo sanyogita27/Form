@@ -1,10 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
-
 import 'package:flutter/material.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:login_form1/global.dart';
-
 import 'package:login_form1/progress_dialog.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -18,6 +16,18 @@ class LoginScreenState extends State<LoginScreen> {
   final _formkey = GlobalKey<FormState>();
   final emailcontroller = TextEditingController();
   final passwordcontroller = TextEditingController();
+
+  // void signInUser() async {
+  //   dynamic authResult =
+  //       await _auth.loginUser(emailcontroller.text, passwordcontroller.text);
+  //   if (authResult == null) {
+  //     debugPrint('Sign in error. could not be able to login');
+  //   } else {
+  //     emailcontroller.clear();
+  //     passwordcontroller.clear();
+  //     Navigator.pushNamed(context, '/home');
+  //   }
+  // }
 
   logininfo() async {
     showDialog(
@@ -34,26 +44,14 @@ class LoginScreenState extends State<LoginScreen> {
               email: emailcontroller.text.trim(),
               password: passwordcontroller.text.trim())
           .then((value) {
+        emailcontroller.clear();
+        passwordcontroller.clear();
         Fluttertoast.showToast(msg: "Login Successful");
         Navigator.pushNamed(context, '/home');
       });
     } on FirebaseAuthException catch (error) {
       return error.message;
     }
-    // if (firebaseUser != null) {
-    //   String uid = firebaseUser.uid;
-
-    //   DocumentSnapshot userDate =
-    //       await FirebaseFirestore.instance.collection('user').doc(uid).get();
-    //   UserModel userModel =
-    //       UserModel.fromMap(userDate.data() as Map<String, dynamic>);
-
-    //   Fluttertoast.showToast(msg: "Login Successful");
-
-    // } else {
-    //   Fluttertoast.showToast(msg: "Invalid Account");
-    //   Navigator.pop(context);
-    // }
   }
 
   @override
