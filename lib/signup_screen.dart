@@ -192,7 +192,7 @@ class SignupPageState extends State<SignupPage> {
               },
               child: imageFile == null
                   ? const CircleAvatar()
-                  : CircleAvatar(radius: 70, child: Image.file(imageFile!)),
+                  : CircleAvatar(radius: 100, child: Image.file(imageFile!)),
             ),
             Container(
               padding: const EdgeInsets.all(16),
