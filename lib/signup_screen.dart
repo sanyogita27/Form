@@ -94,16 +94,16 @@ class SignupPageState extends State<SignupPage> {
         });
   }
 
-  ImagePicker picker = ImagePicker();
-
   void _getFromCamera() async {
-    XFile? pickedFile = await picker.pickImage(source: ImageSource.camera);
+    XFile? pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.camera);
     _cropImage(pickedFile!.path);
     Navigator.pop(context);
   }
 
   void _getFromGallery() async {
-    XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    XFile? pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
     _cropImage(pickedFile!.path);
     Navigator.pop(context);
   }
@@ -125,12 +125,12 @@ class SignupPageState extends State<SignupPage> {
 
     final User? firebaseUser = firebaseAuth.currentUser;
     try {
-      // final ref = FirebaseStorage.instance
-      //     .ref()
-      //     .child("userimage")
-      //     .child('${DateTime.now()}.jpg');
-      // await ref.putFile(imageFile!);
-      // imageUrl = await ref.getDownloadURL();
+      final ref = FirebaseStorage.instance
+          .ref()
+          .child("userimage")
+          .child('${DateTime.now()}.jpg');
+      await ref.putFile(imageFile!);
+      imageUrl = await ref.getDownloadURL();
       await firebaseAuth.createUserWithEmailAndPassword(
           email: _emailcontroller.text.trim(),
           password: _passworrdcontroller.text.trim());
@@ -142,10 +142,10 @@ class SignupPageState extends State<SignupPage> {
       String uid = firebaseUser.uid;
 
       UserModel usersmap = UserModel(
-        uid: firebaseUser.uid,
-        email: _emailcontroller.text,
-        phone: _phonecontroller.text,
-      );
+          uid: firebaseUser.uid,
+          email: _emailcontroller.text,
+          phone: _phonecontroller.text,
+          profilepic: imageUrl);
 
       await FirebaseFirestore.instance
           .collection('user')
@@ -166,7 +166,7 @@ class SignupPageState extends State<SignupPage> {
     CroppedFile? croppedImage = await ImageCropper()
         .cropImage(sourcePath: filePath, maxHeight: 1080, maxWidth: 1080);
     if (croppedImage != null) {
-      imageUrl = (croppedImage.path);
+      imageFile = File(croppedImage.path);
       setState(() {});
     }
   }
@@ -186,15 +186,14 @@ class SignupPageState extends State<SignupPage> {
         physics: const AlwaysScrollableScrollPhysics(),
         child: Column(
           children: [
-            // InkWell(
-            //   onTap: () {
-            //     _showImageDialog();
-            //   },
-            //   child: imageFile == null
-            //       ? const CircleAvatar()
-            //       : CircleAvatar(radius: 70, child: Image.file(imageFile!)),
-            // ),
-
+            InkWell(
+              onTap: () {
+                _showImageDialog();
+              },
+              child: imageFile == null
+                  ? const CircleAvatar()
+                  : CircleAvatar(radius: 70, child: Image.file(imageFile!)),
+            ),
             Container(
               padding: const EdgeInsets.all(16),
               child: Form(

@@ -5,12 +5,13 @@ import 'package:login_form1/model.dart';
 
 class InformationPage extends StatelessWidget {
   InformationPage({super.key});
+
   final HttpService httpService = HttpService();
   Future signOut() async {
     try {
       return firebaseAuth.signOut();
-    } catch (e) {
-      debugPrint(e.toString());
+    } catch (error) {
+      debugPrint(error.toString());
       return null;
     }
   }
@@ -22,8 +23,10 @@ class InformationPage extends StatelessWidget {
         title: const Text("Posts"),
         actions: [
           IconButton(
-              onPressed: () {
-                signOut();
+              onPressed: () async {
+                await signOut().then((result) {
+                  Navigator.of(context).pop(true);
+                });
               },
               icon: const Icon(Icons.logout))
         ],
