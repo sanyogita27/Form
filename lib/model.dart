@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserModel {
@@ -7,9 +5,8 @@ class UserModel {
   String? phone;
   String? email;
   String? profilepic;
-  String? password;
 
-  UserModel({this.uid, this.phone, this.email, this.profilepic, this.password});
+  UserModel({this.uid, this.phone, this.email, this.profilepic});
 
   // UserModel.fromMap(Map<String, dynamic> map) {
   //   uid = map["uid"];
@@ -32,7 +29,6 @@ class UserModel {
       phone: json['phone'] as String,
       email: json['email'] as String,
       profilepic: json['profilepic'] as String,
-      password: json['password'] as String,
     );
   }
   toJson() {
@@ -41,7 +37,6 @@ class UserModel {
       phone: 'phone',
       email: 'email',
       profilepic: 'profilepic',
-      password: 'password',
     );
   }
 
@@ -53,11 +48,11 @@ class UserModel {
     String? password,
   }) {
     return UserModel(
-        uid: uid ?? this.uid,
-        phone: phone ?? this.phone,
-        email: email ?? this.email,
-        profilepic: profilepic ?? this.profilepic,
-        password: password ?? this.password);
+      uid: uid ?? this.uid,
+      phone: phone ?? this.phone,
+      email: email ?? this.email,
+      profilepic: profilepic ?? this.profilepic,
+    );
   }
 
   Map<String, dynamic> toMap() {
@@ -66,7 +61,6 @@ class UserModel {
       'phone': phone,
       'email': email,
       'profilepic': profilepic,
-      'password': password,
     };
   }
 
@@ -77,7 +71,6 @@ class UserModel {
       email: map['email'] != null ? map['email'] as String : null,
       profilepic:
           map['profilepic'] != null ? map['profilepic'] as String : null,
-      password: map['password'] != null ? map['password'] as String : null,
     );
   }
   factory UserModel.fromSnapshot(
@@ -88,7 +81,6 @@ class UserModel {
       email: data['email'],
       phone: data['phone'],
       profilepic: data['profilepic'],
-      password: data['password'],
     );
   }
 
@@ -121,17 +113,12 @@ class UserModel {
     return other.uid == uid &&
         other.phone == phone &&
         other.email == email &&
-        other.profilepic == profilepic &&
-        other.password == password;
+        other.profilepic == profilepic;
   }
 
   @override
   int get hashCode {
-    return uid.hashCode ^
-        phone.hashCode ^
-        email.hashCode ^
-        profilepic.hashCode ^
-        password.hashCode;
+    return uid.hashCode ^ phone.hashCode ^ email.hashCode ^ profilepic.hashCode;
   }
 }
 

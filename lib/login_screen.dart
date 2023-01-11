@@ -69,6 +69,13 @@ class LoginScreenState extends State<LoginScreen> {
               ),
             ),
           ),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/list');
+                },
+                icon: const Icon(Icons.folder_copy))
+          ],
         ),
         body: Container(
           padding: const EdgeInsets.all(30),
