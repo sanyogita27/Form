@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:login_form1/forget_password.dart';
 import 'package:login_form1/global.dart';
 import 'package:login_form1/home_page.dart';
-import 'package:login_form1/information_page.dart';
 import 'package:login_form1/login_screen.dart';
 import 'package:login_form1/signup_screen.dart';
 import 'package:login_form1/user_list.dart';
